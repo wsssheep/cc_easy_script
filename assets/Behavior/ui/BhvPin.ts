@@ -1,5 +1,5 @@
 
-const {ccclass, property,menu,disallowMultiple} = cc._decorator;
+const {ccclass, property,menu,disallowMultiple,executeInEditMode} = cc._decorator;
 
 enum PIN_TYPE {
     positionAngle,
@@ -12,11 +12,15 @@ enum PIN_TYPE {
 //todo 未完成...
 
 /**
- * 绑定该节点 和 另外一个节点的坐标关系，无视节点层级
+ * 无视节点层级，绑定该节点 和 另外一个节点的位置关系，
+ * todo.. 增加绑定边界框的功能
+ * todo.. 增加绑定 非 中心锚点的情况
+ * 
  */
 @ccclass
 @menu("添加特殊行为/UI/Pin (图钉)")
 @disallowMultiple
+//@executeInEditMode
 export default class BhvPin extends cc.Component {
 
     @property({

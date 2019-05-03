@@ -52,7 +52,5 @@ export default class BhvLine extends cc.Component {
         this.node.rotation = cc.misc.radiansToDegrees(angle) * -1;
 
 
-
-
     }
 }

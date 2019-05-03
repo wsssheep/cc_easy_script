@@ -1,3 +1,9 @@
+/*
+ * @Author: wss 
+ * @Date: 2019-04-17 16:33:34 
+ * @Last Modified by: wss
+ * @Last Modified time: 2019-04-21 17:39:53
+ */
 
 const {ccclass, property, menu} = cc._decorator;
 
@@ -10,12 +16,15 @@ enum VALUE_TYPE {
     TIMER,
     /**百分比模式 (百分比结果 基于小数,因此初始值必须为小数)*/
     PERCENTAGE,
+    /*缩写单位模式KMBT */
+    KMBT_FIXED2,
     /**自定义模式 (通过传入的函数,进行自定义) */
     CUSTOMER
 }
 
 /**
- * 滚动数字,将会使用 lerp 自动滚动数字到目标数值
+ * [滚动数字] ver 0.5.0
+ * 将会使用 lerp 自动滚动数字到目标数值
  */
 @ccclass
 @menu("添加特殊行为/UI/Roll Number (滚动数字)")
@@ -143,6 +152,21 @@ export default class BhvRollNumber extends cc.Component {
                 break;
             case VALUE_TYPE.PERCENTAGE: //最终显示 百分比
                 string = Math.round(value*100) +'%';
+                break;
+            case VALUE_TYPE.KMBT_FIXED2: //长单位缩放,只计算到 KMBT
+                if(value>=Number.MAX_VALUE){
+                    string = 'MAX';
+                }else if(value > 1000000000000){
+                    string =  (value/1000000000000).toFixed(2)+'T';
+                }else if(value >1000000000){
+                    string =  (value/1000000000).toFixed(2)+'B';
+                }else if(value >1000000){
+                    string =  (value/1000000).toFixed(2)+'M';
+                }else if(value >1000){
+                    string =  (value/1000).toFixed(2)+"K";
+                }else{
+                    string = Math.round(value).toString();
+                }
                 break;
             case VALUE_TYPE.CUSTOMER: //自定义设置模式 (通过给定的自定义函数..处理)
                 if(this._custom_callback){

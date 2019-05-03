@@ -101,7 +101,7 @@ export class UserSaveData {
             exp:0
         }
 
-        if(_.isEmpty(this.cars)){
+        if(this.cars.length<=0){
             this.cars.push(car0);
         }
     }

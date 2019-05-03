@@ -2,7 +2,7 @@
  * @Author: wss 
  * @Date: 2019-04-10 00:31:19 
  * @Last Modified by: wss
- * @Last Modified time: 2019-04-10 00:40:38
+ * @Last Modified time: 2019-04-19 00:16:17
  */
 
 
@@ -23,6 +23,7 @@ enum DESTROY_ANI {
  * ver 0.1 基本功能，根据时间、距离或者信号销毁对象
  * todo ver 0.2 加入自动销毁时动画
  * todo ver 0.3 自动销毁时选择移出节点而不是 destroy，需要用cc.director 监听
+ * todo ver 0.4 对象池自动回收通知，勾选对象池回收模式，可以将该节点回收到 指定名字的对象池（请自己处理该逻辑）
  */
 @ccclass
 @menu("添加特殊行为/General/AutoDestroy (渐隐渐显)")

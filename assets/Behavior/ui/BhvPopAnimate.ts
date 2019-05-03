@@ -1,3 +1,4 @@
+import { EASE_TYPE, getTweenType } from './../utils/commonTween';
 
 const {ccclass, property, menu, disallowMultiple} = cc._decorator;
 
@@ -13,28 +14,6 @@ enum ANIMATE_STATE {
     /** 移下 */MOVE_DOWN,
     /** 移右 */MOVE_RIGHT,
     /** 移左 */MOVE_LEFT,
-}
-
-/** 基本需要用到的 EASE 类型 */
-enum EASE_TYPE {
-    SineIn,
-    SineInOut,
-    SineOut,
-    BackIn,
-    BackInOut,
-    BackOut,
-    BounceIn,
-    BounceInOut,
-    BounceOut,
-    CircleIn,
-    CircleInOut,
-    CircleOut,
-    CubicIn,
-    CubicInOut,
-    CubicOut,
-    ElasticIn,
-    ElasticInOut,
-    ElasticOut,
 }
 
 
@@ -139,30 +118,7 @@ export default class BhvPopAnimate extends cc.Component {
     //必须在 onload 后 立刻触发，否则动画会有1帧延迟显示
     // }
 
-    private getTweenType(type:EASE_TYPE){
-        let ease;
-        switch (type) {
-            case EASE_TYPE.SineIn: ease = cc.easeSineIn(); break;
-            case EASE_TYPE.SineInOut: ease = cc.easeSineInOut(); break;
-            case EASE_TYPE.SineOut: ease = cc.easeSineOut(); break;
-            case EASE_TYPE.BackIn: ease = cc.easeBackIn(); break;
-            case EASE_TYPE.BackInOut: ease = cc.easeBackInOut(); break;
-            case EASE_TYPE.BackOut: ease = cc.easeBackOut(); break;
-            case EASE_TYPE.BounceIn: ease = cc.easeBounceIn(); break;
-            case EASE_TYPE.BounceInOut: ease = cc.easeBounceInOut(); break;
-            case EASE_TYPE.BounceOut: ease = cc.easeBounceOut(); break;
-            case EASE_TYPE.CubicIn: ease = cc.easeCubicActionIn(); break;
-            case EASE_TYPE.CubicInOut: ease = cc.easeCubicActionInOut(); break;
-            case EASE_TYPE.CubicOut: ease = cc.easeCubicActionOut(); break;
-            case EASE_TYPE.ElasticIn: ease = cc.easeElasticIn(0.3); break;
-            case EASE_TYPE.ElasticInOut: ease = cc.easeElasticInOut(0.3); break;
-            case EASE_TYPE.ElasticOut: ease = cc.easeElasticOut(0.3); break;
-        
-            default:
-                break;
-        }
-        return ease;
-    }
+    private getTweenType = getTweenType;
 
     onEnable(){
         this.node.on('pop-animate-in',this.onPlayAnimationIn,this);
@@ -174,7 +130,7 @@ export default class BhvPopAnimate extends cc.Component {
         this.node.off('pop-animate-out',this.onPlayAnimationOut,this);
     }
 
-    private onPlayAnimationIn(delay:number =0){
+    public onPlayAnimationIn(delay:number =0){
         let dark = this.darkMask;
         let speed:number = this.animateSpeed||1;
         let runAnimation = ()=>{
@@ -192,7 +148,7 @@ export default class BhvPopAnimate extends cc.Component {
         };
 
         //延迟播放动画内容
-        if(delay>0){
+        if(typeof delay == 'number'&&delay>0){
             this.scheduleOnce(runAnimation,delay);
         }else{
             runAnimation();
@@ -201,7 +157,7 @@ export default class BhvPopAnimate extends cc.Component {
 
     }
 
-    private onPlayAnimationOut(delay:number =0){
+    public onPlayAnimationOut(delay:number =0){
             let dark = this.darkMask;
             let speed:number = this.animateSpeed||1;
 
@@ -218,7 +174,7 @@ export default class BhvPopAnimate extends cc.Component {
             }
 
             //延迟播放动画内容(可配合本身动画操作)
-            if(delay>0){
+            if(typeof delay == 'number'&&delay>0){
                 this.scheduleOnce(runAnimation,delay);
             }else{
                 runAnimation();

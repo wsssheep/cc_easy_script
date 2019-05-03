@@ -2,7 +2,7 @@
  * @Author: ws.s 
  * @Date: 2018-12-06 16:11:31 
  * @Last Modified by: wss
- * @Last Modified time: 2019-04-10 00:37:02
+ * @Last Modified time: 2019-04-19 01:15:31
  */
 
 
@@ -379,7 +379,7 @@ export default class BhvCameraExtra extends cc.Component {
     /** 更新画面颜色效果 */
     protected updateFX(dt) {
 
-        
+        this.fx.node.scale = 1/this._ctrlNode.scale;
         if (this._fxConfig.type === 0) {
             //  flash - 闪烁
             this.fx.node.opacity -= dt / this._fxConfig.duration * 60;
@@ -630,7 +630,7 @@ export default class BhvCameraExtra extends cc.Component {
         //return; //!debug
         this.atLimit.x = false;
         this.atLimit.y = false;
-
+        
         var vx = this.view.x + this._shake.x;
         var vw = this.view.x + this.view.width + this._shake.x;
         var vy = this.view.y + this._shake.y;

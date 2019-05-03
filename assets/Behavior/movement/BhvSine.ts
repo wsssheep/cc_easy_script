@@ -173,6 +173,9 @@ export default class BhvSine extends cc.Component {
         this.updateFromPhase();
     }
 
+    /**获取sine 产生的值 */
+    public value:number = 0;
+
     private waveFunc(x:number):number{
 
 		x = x % _2pi;
@@ -215,40 +218,41 @@ export default class BhvSine extends cc.Component {
     }
 
     private updateFromPhase () {
-  
+        let waveRes = this.waveFunc(this.i) * this.mag;//wave 函数计算结果
+        this.value = waveRes;// 保存到 value 值中
         switch (this.movement) {
             case MOVEMENT.horizontal:	
                 if (this.node.x !== this.lastKnownValue)
                     this.initialValue += this.node.x - this.lastKnownValue;
                     
-                this.node.x = this.initialValue + this.waveFunc(this.i) * this.mag;
+                this.node.x = this.initialValue + waveRes;
                 this.lastKnownValue = this.node.x;
                 break;
             case MOVEMENT.vertical:		
                 if (this.node.y !== this.lastKnownValue)
                     this.initialValue += this.node.y - this.lastKnownValue;
                     
-                this.node.y = this.initialValue + this.waveFunc(this.i) * this.mag;
+                this.node.y = this.initialValue + waveRes;
                 this.lastKnownValue = this.node.y;
                 break;
             case MOVEMENT.scale:	
-                this.node.scale = this.initialValue + this.waveFunc(this.i) * this.mag;
+                this.node.scale = this.initialValue + waveRes;
                 break;
             case MOVEMENT.scaleX:		
-                this.node.scaleX = this.initialValue + this.waveFunc(this.i) * this.mag;
+                this.node.scaleX = this.initialValue + waveRes;
                 break;
             case MOVEMENT.scaleY:		
-                this.node.scaleY = this.initialValue + this.waveFunc(this.i) * this.mag;
+                this.node.scaleY = this.initialValue + waveRes;
                 break;
             case MOVEMENT.rotation:		
                 if (this.node.rotation !== this.lastKnownValue)
                     this.initialValue = this.initialValue + (this.node.rotation - this.lastKnownValue);
                     
-                this.node.rotation = this.initialValue + this.waveFunc(this.i) * this.mag;
+                this.node.rotation = this.initialValue + waveRes;
                 this.lastKnownValue = this.node.rotation;
                 break;
             case MOVEMENT.opacity:		
-                this.node.opacity = this.initialValue + (this.waveFunc(this.i) * this.mag);
+                this.node.opacity = this.initialValue + (waveRes);
                 
                 if (this.node.opacity < 0)
                     this.node.opacity = 0;
@@ -257,17 +261,17 @@ export default class BhvSine extends cc.Component {
                     
                 break;
             case MOVEMENT.skewX:		
-                this.node.skewX = this.initialValue + this.waveFunc(this.i) * this.mag;
+                this.node.skewX = this.initialValue + waveRes;
                 break;
             case MOVEMENT.skewY:		
-                this.node.skewY = this.initialValue + this.waveFunc(this.i) * this.mag;
+                this.node.skewY = this.initialValue + waveRes;
                 break;
             case MOVEMENT.forward:	//forwards/backwards
                 if (this.node.x !== this.lastKnownValue) this.initialValue += this.node.x - this.lastKnownValue;
                 if (this.node.y !== this.lastKnownValue2) this.initialValue2 += this.node.y - this.lastKnownValue2;
                     
-                this.node.x = this.initialValue + Math.cos(this.node.rotation/360 *_2pi) * this.waveFunc(this.i) * this.mag;
-                this.node.y = this.initialValue2 + Math.sin(this.node.rotation/360 *_2pi) * this.waveFunc(this.i) * this.mag;
+                this.node.x = this.initialValue + Math.cos(this.node.rotation/360 *_2pi) * waveRes;
+                this.node.y = this.initialValue2 + Math.sin(this.node.rotation/360 *_2pi) * waveRes;
                 this.lastKnownValue = this.node.x;
                 this.lastKnownValue2 = this.node.y;
 

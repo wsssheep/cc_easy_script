@@ -19,6 +19,7 @@ enum WRAP_MODE {
 
 /**
  * Wrap 包装，会将对象限定在包装范围内,可以循环也可以限制移动的边界范围
+ * （请使用 BhvBoundary 代替，该行为已经弃用）
  */
 @ccclass
 @menu("添加特殊行为/General/Wrap (包装)")
@@ -43,11 +44,12 @@ export default class BhvWrap extends cc.Component {
         child.setParent(this.node);
         child.setPosition(0,0);
 
-        /**@type cc.Graphics */
-        var graphic = child.addComponent(cc.Graphics);
-        graphic.rect(-bBound.width * offset.x,-bBound.height *offset.y,bBound.width,bBound.height);
-        graphic.fillColor = cc.color(0,255,155,155);
-        graphic.fill();
+
+        // 测试，绘制 bound box
+        // var graphic:cc.Graphics = child.addComponent(cc.Graphics);
+        // graphic.rect(-bBound.width * offset.x,-bBound.height *offset.y,bBound.width,bBound.height);
+        // graphic.fillColor = cc.color(0,255,155,155);
+        // graphic.fill();
     
     }
 
