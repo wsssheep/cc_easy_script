@@ -29,6 +29,17 @@ export default class CellItemSlot extends cc.Component {
 
     // LIFE-CYCLE CALLBACKS:
 
+  
+    onLoad () {
+        let comp = this.dragItem.getComponent(BhvDragDrop);
+        if(comp == null){
+          comp = this.dragItem.addComponent(BhvDragDrop);
+          comp.parent = this.node.getParent();
+        }
+        comp.emitTarget = this.node; //将节点信号发送给本脚本
+        this.node.getChildByName('icon').opacity = 0;
+    }
+
     start () {
         this.setItemId(this.itemId);
     }
@@ -38,55 +49,84 @@ export default class CellItemSlot extends cc.Component {
             this.dragItem.getComponent(BhvFrameIndex).index = id;
             this.itemId = id;
         }
-    }
 
-    onLoad () {
-        let comp = this.dragItem.getComponent(BhvDragDrop);
-        if(comp == null){
-          comp = this.dragItem.addComponent(BhvDragDrop);
-          comp.parent = this.node.getParent();
-        }
-        comp.emitTarget = this.node; //将节点信号发送给本脚本
+        let node = this.node.getChildByName('icon');
+        node.getComponent(BhvFrameIndex).index = id;
     }
 
     onEnable(){
+
+        //拖拽基本事件
+        this.node.on('onDragStart',this.onDragStart,this);
+        this.node.on('onDragMove',this.onDragMove,this);
+        this.node.on('onDragDrop',this.onDragDrop,this);
+        this.node.on('onDropBack',this.onDropBack,this);
+        
+        //拖拽出界事件
         this.node.on('onMoveEnterOutRage',this.onMoveEnterOutRage,this);
         this.node.on('onMoveLeaveOutRage',this.onMoveLeaveOutRage,this);
         this.node.on('onDropOutRage',this.onDropOutRage,this);
 
-        this.node.on('onDragMoveEnter',this.onDragMoveEnter,this);
-        this.node.on('onDragMoveLeave',this.onDragMoveLeave,this);
+        //区域基本事件
+        this.node.on('onDragEnterArea',this.onDragEnterArea,this);
+        this.node.on('onDragLeaveArea',this.onDragLeaveArea,this);
         this.node.on('onDropInArea',this.onDropInArea,this);
+        this.node.on('onDropOutArea',this.onDropOutArea,this);
 
     }
 
-    onMoveEnterOutRage(dragNode:cc.Node){
+    onDragStart(dragNode:cc.Node,tag:string){
+        this.node.getChildByName('icon').opacity = 55;
+    }
+
+    onDragMove(dragNode:cc.Node,tag:string){
+
+    }
+
+    onDragDrop(dragNode:cc.Node,tag:string){
+      
+    }
+
+    onDropBack(dragNode:cc.Node,tag:string){
+       this.node.getChildByName('icon').opacity = 0;
+       console.log('ab');
+    }
+
+    onMoveEnterOutRage(dragNode:cc.Node,tag:string){
         //console.log('移出到了外面-',dragNode.name);
+        dragNode.getChildByName('delete').active = true;
     }
     
-    onMoveLeaveOutRage(dragNode:cc.Node){
+    onMoveLeaveOutRage(dragNode:cc.Node,tag:string){
         //console.log('移回来了里面-',dragNode.name);
+        dragNode.getChildByName('delete').active = false;
     }
 
-    onDropOutRage(dragNode:cc.Node){
-        console.log('丢掉了道具-',dragNode.name);
+    //丢出范围外，一般用于删除道具的判断
+    onDropOutRage(dragNode:cc.Node,tag:string){
+        //console.log('丢掉了道具-',dragNode.name);
         this.setItemId(0);
-        
     }
 
-    onDragMoveEnter(dragNode:cc.Node,dropNode:cc.Node){
-        console.log('移入某节点-',dragNode.name);
+    onDragEnterArea(dragNode:cc.Node,dropNode:cc.Node,tag:string){
+      
     }
 
-    onDragMoveLeave(dragNode:cc.Node,dropNode:cc.Node){
-        console.log('移出某节点-',dragNode.name);
+    onDragLeaveArea(dragNode:cc.Node,dropNode:cc.Node,tag:string){
+   
     }
     
-    onDropInArea(dragNode:cc.Node,dropNode:cc.Node){
-        console.log('丢入区域内-',dragNode.name);
-        let index =   dragNode.getComponent(BhvFrameIndex).index;
-        dragNode.getComponent(BhvFrameIndex).index = this.dragItem.getComponent(BhvFrameIndex).index;
-        this.setItemId(index);
+    onDropInArea(dragNode:cc.Node,dropNode:cc.Node,tag:string){
+        //交换两个道具的信息
+        let target =   dragNode.getComponent(BhvDragDrop).emitTarget;
+
+        let selfItem = target.getComponent(CellItemSlot);
+        let otherItem = dropNode.getComponent(CellItemSlot);
+        let selfIndex = selfItem.itemId;
+        let otherIndex = otherItem.itemId;
+        
+        selfItem.setItemId(otherIndex);
+        otherItem.setItemId(selfIndex);
 
         let action = cc.sequence([
             cc.scaleTo(0.05,1.2).easing(cc.easeBackIn()),
@@ -95,6 +135,11 @@ export default class CellItemSlot extends cc.Component {
 
         this.dragItem.runAction(action);
 
+    }
+
+    //丢在区域外部，一般用于检测区域结束
+    onDropOutArea(dragNode:cc.Node,dropNode:cc.Node,tag:string){
+        
     }
 
 

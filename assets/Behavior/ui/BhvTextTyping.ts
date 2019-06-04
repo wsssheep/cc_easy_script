@@ -1,8 +1,8 @@
 /*
  * @Author: wss 
  * @Date: 2019-04-23 21:54:36 
- * @Last Modified by:   wss 
- * @Last Modified time: 2019-04-23 21:54:36 
+ * @Last Modified by: wss
+ * @Last Modified time: 2019-05-15 20:15:41
  */
 
 
@@ -26,6 +26,10 @@ let transferText = function (text: any): string {
     return text;
 }
 
+/**
+ * 文本打字机
+ * todo 增加文本打字完成的回调事件 
+ */
 @ccclass
 @menu("添加特殊行为/UI/Text Typing (打字机)")
 @disallowMultiple
@@ -143,7 +147,6 @@ export default class BhvTextTyping extends cc.Component {
         this.textLen = this.getTextLength(this.text);
 
     }
-
 
     private onTyping() {
         if (this.paused == true) return;//暂停时,不打字

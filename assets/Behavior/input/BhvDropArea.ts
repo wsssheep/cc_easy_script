@@ -4,7 +4,7 @@ import BhvDragDrop from "./BhvDragDrop";
  * @Author: wss 
  * @Date: 2019-05-08 12:21:15 
  * @Last Modified by: wss
- * @Last Modified time: 2019-05-08 22:15:48
+ * @Last Modified time: 2019-05-09 16:27:01
  */
 
 
@@ -64,12 +64,18 @@ export default class BhvDropArea extends cc.Component {
     private _pre_scale:number;
     private _pre_opacity:number;
 
+    
     onEnable(){
         cc.director.on('onAreaDragStart:' + this.tag,this.onDragStart,this);
         cc.director.on('onAreaDragMove:' + this.tag,this.onDragMove,this);
         cc.director.on('onAreaDragDrop:' + this.tag,this.onDragDrop,this);
     }
 
+    onDisable(){
+        cc.director.off('onAreaDragStart:' + this.tag,this.onDragStart);
+        cc.director.off('onAreaDragMove:' + this.tag,this.onDragMove);
+        cc.director.off('onAreaDragDrop:' + this.tag,this.onDragDrop);
+    }
     onLoad () {
         this.saveNodeEffect();
     }
@@ -128,6 +134,7 @@ export default class BhvDropArea extends cc.Component {
 
     //发现有东西在拖拽（在这里可以出现提示之类的操作）
     private onDragStart(event:cc.Event.EventTouch,tag:string){
+        //
     }
     
     //拖拽移动了
@@ -141,14 +148,14 @@ export default class BhvDropArea extends cc.Component {
             if(comp._usedFlag === null){
                 comp._usedFlag = this.node.uuid;
                 this.onDragMoveEnter(node);
-                node.emit('onDragMoveEnter',this.node);
+                node.emit('onDragEnterArea',this.node);
             }
         }else{
             //查询唯一节点标记
             if(comp._usedFlag === this.node.uuid){
                 comp._usedFlag = null;
                 this.onDragMoveLeave(node);
-                node.emit('onDragMoveLeave',this.node);
+                node.emit('onDragLeaveArea',this.node);
             }
         }
         
@@ -177,27 +184,25 @@ export default class BhvDropArea extends cc.Component {
     private onDragMoveEnter(node:cc.Node){
         this.saveNodeEffect();
         this.setNodeEffect(true);
-        this.node.emit('onDragMoveEnter',node,this.node);
+        this.node.emit('onDragMoveEnter',node,this.node,this.tag);
     }
 
     //移动离开 drop 区域内部
     private onDragMoveLeave(node:cc.Node){
        this.setNodeEffect(false);
-       this.node.emit('onDragMoveLeave',node,this.node);
+       this.node.emit('onDragMoveLeave',node,this.node,this.tag);
     }
 
     //丢在了drop 区域
     private onDropInArea(node:cc.Node){
         console.log('丢到节点区域了');
-        this.node.emit('onDropInArea',node,this.node);
+        this.node.emit('onDropInArea',node,this.node,this.tag);
     }
     
     //丢在了 drop 区域外部
     private onDropOutArea(node:cc.Node){
-        
+        this.node.emit('onDropOutArea',node,this.node,this.tag);
     }
-
-
 
 
 

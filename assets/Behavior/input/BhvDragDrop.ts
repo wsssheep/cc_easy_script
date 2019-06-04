@@ -4,7 +4,7 @@
  * @Author: wss 
  * @Date: 2019-05-03 22:55:38 
  * @Last Modified by: wss
- * @Last Modified time: 2019-05-08 22:28:34
+ * @Last Modified time: 2019-05-09 16:25:10
  */
 
 
@@ -119,9 +119,11 @@ export default class BhvDragDrop extends cc.Component {
     isMoving:boolean;
     moveDeltaX:number;
     moveDeltaY:number;
+    
     private _pre_dragColor:cc.Color;
     private _pre_scale:number;
     private _pre_opacity:number;
+    
     private _pre_position:cc.Vec2;
     private _pre_zindex:number;
 
@@ -142,6 +144,22 @@ export default class BhvDragDrop extends cc.Component {
             this.emitTarget = this.node;
         }
     }
+
+    /**
+     * 在脚本中方便进行初始化操作
+     * @param target 
+     * @param parent 
+     */
+    public init(target:cc.Node,parent:cc.Node,config:any){
+        this.emitTarget = target;
+        this.parent = parent;
+        this.tag = config.tag||'';
+        this.dragEffect = config.effect;
+        this.dragScale =  config.dragScale;
+        this.dragColor = config.dragColor;
+        this.dragOpacity = config.dragOpacity;
+
+    }
   
     start () {
         this.outRangeBounds =  this.getParentBounds();
@@ -157,11 +175,6 @@ export default class BhvDragDrop extends cc.Component {
          this.node.on(cc.Node.EventType.TOUCH_MOVE,this.onDragMove,this);
          this.node.on(cc.Node.EventType.TOUCH_END,this.onDragDrop,this);
          this.node.on(cc.Node.EventType.TOUCH_CANCEL,this.onDragDrop,this);
-
-         this.node.on('onDragMoveEnter',this.onDragMoveEnter,this);
-         this.node.on('onDragMoveLeave',this.onDragMoveLeave,this);
-         this.node.on('onDropInNode',this.onDropInNode,this);
-
     }
 
     onDisable(){
@@ -169,11 +182,6 @@ export default class BhvDragDrop extends cc.Component {
         this.node.off(cc.Node.EventType.TOUCH_MOVE,this.onDragMove,this);
         this.node.off(cc.Node.EventType.TOUCH_END,this.onDragDrop,this);
         this.node.off(cc.Node.EventType.TOUCH_CANCEL,this.onDragDrop,this);
-
-        this.node.off('onDragMoveEnter',this.onDragMoveEnter,this);
-        this.node.off('onDragMoveLeave',this.onDragMoveLeave,this);
-        this.node.off('onDropInNode',this.onDropInNode,this);
-
     }
 
     getParentBounds():cc.Rect{
@@ -188,7 +196,6 @@ export default class BhvDragDrop extends cc.Component {
     checkOutRange():boolean{
         let boundA = this.outRangeBounds;
         let boundB = this.node.getBoundingBoxToWorld();
-
         if(!cc.Intersection.rectRect(boundB,boundA)){
             this.isOutRange = true;
         }else{
@@ -199,7 +206,6 @@ export default class BhvDragDrop extends cc.Component {
 
     //自身拖拽开始
     onDragStart(event){
-
         //开始,记录开始前的效果状态
         this.saveNodeEffect();
 
@@ -221,6 +227,8 @@ export default class BhvDragDrop extends cc.Component {
         if(this.dragMode === DRAG_MODE.dropArea){
             cc.director.emit('onAreaDragStart:'+this.tag,event,this.tag);
         }
+
+        this.emitTarget.emit('onDragStart',this.node,this.tag);
 
 
 
@@ -272,7 +280,7 @@ export default class BhvDragDrop extends cc.Component {
             
         }
 
-
+        this.emitTarget.emit('onDragMove',this.node,this.tag);
 
 
  
@@ -298,8 +306,13 @@ export default class BhvDragDrop extends cc.Component {
             // this.node.x = this._pre_position.x;
             // this.node.y = this._pre_position.y;
             if(this.dropBack){
-                let action = cc.moveTo(0.5,this._pre_position.x,this._pre_position.y).easing(cc.easeBackOut());
-                this.node.runAction(action);
+                let action = cc.moveTo(0.3,this._pre_position.x,this._pre_position.y).easing(cc.easeBackOut());
+                this.node.runAction(cc.sequence([
+                    action,
+                    cc.callFunc(()=>{
+                        this.emitTarget.emit('onDropBack',this.node,this.tag);//回弹的动画
+                    })
+                ]));
             }else{
                 this.node.x = this._pre_position.x;
                 this.node.y = this._pre_position.y;
@@ -309,70 +322,73 @@ export default class BhvDragDrop extends cc.Component {
         }
 
 
+        this.emitTarget.emit('onDragDrop',this.node,this.tag);
+
+
     }
 
     //拖拽到别的节点的情况
 
     //移出边界范围
     onMoveEnterOutRage(){
-        console.log('进入 边界范围');
-        let node = this.node.getChildByName('delete');
-        if(node)node.active = true;
-        this.emitTarget.emit('onMoveEnterOutRage',this.node);
+        // console.log('进入 边界范围');
+        // let node = this.node.getChildByName('delete');
+        // if(node)node.active = true;
+        this.emitTarget.emit('onMoveEnterOutRage',this.node,this.tag);
     }
 
     //从边界范围移回来
     onMoveLeaveOutRage(){
-        console.log('离开边界范围');
-        let node = this.node.getChildByName('delete');
-        if(node)node.active = false;
-        this.emitTarget.emit('onMoveLeaveOutRage',this.node);
+        // console.log('离开边界范围');
+        // let node = this.node.getChildByName('delete');
+        // if(node)node.active = false;
+        this.emitTarget.emit('onMoveLeaveOutRage',this.node,this.tag);
     }
 
     //从边界范围外丢下了东西
     onDropOutRage(){
         let node = this.node.getChildByName('delete');
         if(node)node.active = false;
-        this.emitTarget.emit('onDropOutRage',this.node);
+        this.emitTarget.emit('onDropOutRage',this.node,this.tag);
     }
 
-    //[可能不需要的回调]拖动该物体时，进入了某个节点的区域
-    onDragMoveEnter(enterNode:cc.Node){
+    // //[可能不需要的回调]拖动该物体时，进入了某个节点的区域
+    // onDragMoveEnter(enterNode:cc.Node){
         
-        //this.emitTarget.emit('onDragMoveEnter',enterNode);
-    }
+    //     //this.emitTarget.emit('onDragMoveEnter',enterNode);
+    // }
 
-    //[可能不需要的回调]拖动该物体时，离开了某个节点的区域
-    onDragMoveLeave(leaveNode:cc.Node){
-        //this.emitTarget.emit('onDragMoveLeave',leaveNode);
-    }
+    // //[可能不需要的回调]拖动该物体时，离开了某个节点的区域
+    // onDragMoveLeave(leaveNode:cc.Node){
+    //     //this.emitTarget.emit('onDragMoveLeave',leaveNode);
+    // }
 
-    //[可能不需要的回调]将该物体，丢在了某个节点区域内
-    onDropInNode(dropNode:cc.Node){
+    // //[可能不需要的回调]将该物体，丢在了某个节点区域内
+    // onDropInNode(dropNode:cc.Node){
 
-        //this.emitTarget.emit('onDropInNode',dropNode);
+    //     //this.emitTarget.emit('onDropInNode',dropNode);
 
-        // if(this.dropDestroy){
+    //     // if(this.dropDestroy){
 
-        //     this.node.destroy();
-        // }
+    //     //     this.node.destroy();
+    //     // }
 
-        // console.log('丢给了某个节点');
-        // this.dropBack = false;
-        // this.node.stopAllActions();
-        // this.node.runAction(cc.sequence([
-        //     cc.moveTo(0.2,dropNode.x,dropNode.y).easing(cc.easeBackInOut()),
-        //     cc.callFunc(()=>{
-        //         this.dropBack = true;
-        //     })
-        // ]));
-        // this.node.x = dropNode.x;
-        // this.node.y = dropNode.y;
+    //     // console.log('丢给了某个节点');
+    //     // this.dropBack = false;
+    //     // this.node.stopAllActions();
+    //     // this.node.runAction(cc.sequence([
+    //     //     cc.moveTo(0.2,dropNode.x,dropNode.y).easing(cc.easeBackInOut()),
+    //     //     cc.callFunc(()=>{
+    //     //         this.dropBack = true;
+    //     //     })
+    //     // ]));
+    //     // this.node.x = dropNode.x;
+    //     // this.node.y = dropNode.y;
 
-        // dropNode.getComponentInChildren(cc.Label).string = this.node.getComponentInChildren(cc.Label).string;
-        // this.node.destroy();
-        //this.node.destroy();
-    }
+    //     // dropNode.getComponentInChildren(cc.Label).string = this.node.getComponentInChildren(cc.Label).string;
+    //     // this.node.destroy();
+    //     //this.node.destroy();
+    // }
 
 
     private saveNodeEffect(){

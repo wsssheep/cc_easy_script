@@ -9,19 +9,33 @@ enum PIN_TYPE {
     bar,
 }
 
-//todo 未完成...
-
 /**
  * 无视节点层级，绑定该节点 和 另外一个节点的位置关系，
  * todo.. 增加绑定边界框的功能
  * todo.. 增加绑定 非 中心锚点的情况
+ * todo.. 增加绑定缩放的情况
  * 
  */
 @ccclass
 @menu("添加特殊行为/UI/Pin (图钉)")
 @disallowMultiple
-//@executeInEditMode
+@executeInEditMode
 export default class BhvPin extends cc.Component {
+
+    @property
+    private _preview : boolean = false;
+    public get preview() : boolean {
+        return this._preview;
+    }
+    @property
+    public set preview(v : boolean) {
+        this._preview = v;
+        //重新绑定位置
+        if(v===true){
+            if(this.pinObject)this.pin(this.pinObject);
+        }
+    }
+    
 
     @property({
         type:cc.Node,
@@ -47,7 +61,7 @@ export default class BhvPin extends cc.Component {
     // LIFE-CYCLE CALLBACKS:
 
     
-    start () {
+    onLoad () {
 		this.pinAngle = 0;
 		this.pinDist = 0;
 		this.myStartRotation = 0;  
@@ -58,6 +72,13 @@ export default class BhvPin extends cc.Component {
     }
 
     update (){
+
+        if(CC_EDITOR){
+            if(!this.preview)return;
+        }
+
+        if(this.pinObject == null)return;
+
         let newX:number = 0;
         let newY:number = 0;
         let pos:cc.Vec2 = this.node.position;
@@ -73,7 +94,7 @@ export default class BhvPin extends cc.Component {
                 let a:number = this.angleTo(pos2.x, pos2.y,pos.x,pos.y);
                 let d:number = cc.misc.degreesToRadians(a);
 				newX = pos2.x + Math.cos(d) * this.pinDist;
-				newY = pos2.y - Math.sin(d) * this.pinDist;
+				newY = pos2.y + Math.sin(d) * this.pinDist;
 			}
 		}
 		else
@@ -81,7 +102,7 @@ export default class BhvPin extends cc.Component {
             let a:number = this.pinObject.rotation + this.pinAngle;
             let d:number = cc.misc.degreesToRadians(a);
 			newX = pos2.x + Math.cos(d) * this.pinDist;
-            newY = pos2.y - Math.sin(d) * this.pinDist;
+            newY = pos2.y + Math.sin(d) * this.pinDist;
       
         }
 
@@ -108,7 +129,9 @@ export default class BhvPin extends cc.Component {
     pin(node:cc.Node,mode?){
         this.pinObject = node;
 		this.pinAngle = this.angleTo(node.x, node.y, this.node.x, this.node.y) - node.rotation;
-		this.pinDist = this.distanceTo(node.x, node.y, this.node.x, this.node.y);
+        this.pinDist = this.distanceTo(node.x, node.y, this.node.x, this.node.y);
+        cc.log('PIN:A:',this.pinAngle);
+        cc.log('PIN:D:',this.pinDist);
 		this.myStartRotation = this.node.rotation;
 		this.lastKnownAngle = this.node.rotation;
 		this.theirStartRotation = node.rotation;
@@ -145,7 +168,7 @@ export default class BhvPin extends cc.Component {
     }
 
     private angleTo(x1,y1,x2,y2){
-        return Math.atan2(y2 - y1, x2 - x1);
+        return cc.misc.radiansToDegrees(Math.atan2(y2 - y1, x2 - x1));
     }
 
     onDestroy(){
