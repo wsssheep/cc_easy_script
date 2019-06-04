@@ -5,8 +5,8 @@ enum PIN_TYPE {
     positionAngle,
     position,
     angle,
-    rope,
-    bar,
+    // rope,
+    // bar,
 }
 
 /**
@@ -87,22 +87,24 @@ export default class BhvPin extends cc.Component {
         //这里转换有点问题...
         if (this.mode === 3 || this.mode === 4)		// rope mode or bar mode
 		{
-			let dist:number = this.distanceTo(pos.x, pos.y,pos2.x, pos2.y);
+			// let dist:number = this.distanceTo(pos.x, pos.y,pos2.x, pos2.y);
 			
-			if ((dist > this.pinDist) || (this.mode === 4 && dist < this.pinDist))
-			{
-                let a:number = this.angleTo(pos2.x, pos2.y,pos.x,pos.y);
-                let d:number = cc.misc.degreesToRadians(a);
-				newX = pos2.x + Math.cos(d) * this.pinDist;
-				newY = pos2.y + Math.sin(d) * this.pinDist;
-			}
+			// if ((dist > this.pinDist) || (this.mode === 4 && dist < this.pinDist))
+			// {
+            //     let a:number = -this.angleTo(pos2.x, pos2.y,pos.x,pos.y);
+            //     let d:number = cc.misc.degreesToRadians(a);
+			// 	newX = pos2.x + Math.cos(d) * this.pinDist;
+			// 	newY = pos2.y - Math.sin(d) * this.pinDist;
+            // }
+            cc.error('rope mode or bar mode is developing!');
+            this.preview = false;
 		}
 		else
 		{
             let a:number = this.pinObject.rotation + this.pinAngle;
             let d:number = cc.misc.degreesToRadians(a);
 			newX = pos2.x + Math.cos(d) * this.pinDist;
-            newY = pos2.y + Math.sin(d) * this.pinDist;
+            newY = pos2.y - Math.sin(d) * this.pinDist;
       
         }
 
@@ -128,10 +130,9 @@ export default class BhvPin extends cc.Component {
 
     pin(node:cc.Node,mode?){
         this.pinObject = node;
-		this.pinAngle = this.angleTo(node.x, node.y, this.node.x, this.node.y) - node.rotation;
+		this.pinAngle =  - this.angleTo(node.x, node.y,this.node.x, this.node.y) - node.rotation;
+		//this.pinAngle =  - this.angleTo(node.x, node.y,this.node.x, this.node.y) - node.rotation;
         this.pinDist = this.distanceTo(node.x, node.y, this.node.x, this.node.y);
-        cc.log('PIN:A:',this.pinAngle);
-        cc.log('PIN:D:',this.pinDist);
 		this.myStartRotation = this.node.rotation;
 		this.lastKnownAngle = this.node.rotation;
 		this.theirStartRotation = node.rotation;
