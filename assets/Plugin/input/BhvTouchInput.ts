@@ -39,6 +39,8 @@ enum SCREEN_DIV_TYPE {
 /**
  * Cocos Touch 输入事件
  * 封装节点touch 事件，让 触摸能够在全局环境中使用
+ * 兼容鼠标输入操作方式
+ * 
  */
 @ccclass
 @menu("添加全局插件/Input/Touch")
@@ -183,6 +185,12 @@ export default class PlugTouch extends cc.Component {
         node.on(cc.Node.EventType.TOUCH_MOVE,this.onTouchMove,this,true);
         node.on(cc.Node.EventType.TOUCH_END,this.onTouchEnd,this,true);
         node.on(cc.Node.EventType.TOUCH_CANCEL,this.onTouchCancel,this,true);
+        node.on(cc.Node.EventType.MOUSE_MOVE,this.onMouseMove,this,true);
+        node.on(cc.Node.EventType.MOUSE_WHEEL,this.onMouseWheel,this,true);
+
+        node.on(cc.Node.EventType.MOUSE_UP,this.onMouseUp,this,true);
+        node.on(cc.Node.EventType.MOUSE_DOWN,this.onMouseDown,this,true);
+  
 
         cc.view.setResizeCallback(()=>{
            this.node.width =  cc.view.getCanvasSize().width;
@@ -282,7 +290,7 @@ export default class PlugTouch extends cc.Component {
     }
 
     /**
-     *  检查不同区域的点击
+     *  检查不同区域范围的点击(以 屏幕为基准)
      */
     private checkTouchArea(e:cc.Touch)
     {
@@ -299,8 +307,6 @@ export default class PlugTouch extends cc.Component {
             info.triggeredHold = false;
             info.isTouch = true;
         }
-    
-
        
     }
     
@@ -335,6 +341,26 @@ export default class PlugTouch extends cc.Component {
             this.checkSwipe(e,duration);
             info.isTouch =false;
         }
+    }
+
+    /**鼠标抬起时 */
+    private onMouseUp(e:cc.Event.EventMouse){
+        
+    }
+
+    /**鼠标按下时 */
+    private onMouseDown(e:cc.Event.EventMouse){
+
+    }
+
+    /**鼠标移动时 */
+    private onMouseMove(e:cc.Event.EventMouse){
+
+    }
+
+    /**鼠标滚动时 */
+    private onMouseWheel(e:cc.Event.EventMouse){
+
     }
 
     update (dt) {

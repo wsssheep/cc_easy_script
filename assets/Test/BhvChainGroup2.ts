@@ -10,6 +10,10 @@
 
 const {ccclass, property} = cc._decorator;
 
+/**
+ * 
+ *  TODO 可以将自己定义的节点构成 chain,而不是默认的组件绑定节点的 子节点
+ */
 @ccclass
 export default class BhvChainGroup2 extends cc.Component {
 

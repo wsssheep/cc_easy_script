@@ -85,7 +85,25 @@ export default class BhvBullet extends cc.Component {
 
 	
         
-    }
+	}
+
+	/**
+	 * [实验]随机改变子弹角度
+	 */
+	public randomAngle(){
+		this.setMoveAngle(Math.PI*2 * Math.random());
+	}
+	
+	/**
+	 * [实验] 翻转角度方向
+	 */
+	public reverseAngle(){
+		//TODO 可能有问题，需要验证一下
+		//todo 再增加一个折射角度方法
+		//todo 再增加随机反射角度方向
+		let angle = -Math.PI + this.moveAngle;
+		this.setMoveAngle(angle);
+	}
 
     update (dt:number) {
         if (!this.enabled)return;

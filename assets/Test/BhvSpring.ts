@@ -9,7 +9,7 @@
 const { ccclass, property } = cc._decorator;
 
 /**
- * 弹簧，目前只是实现了一个简单的动画效果，并不实用
+ * 弹簧，弹性动画效果
  */
 @ccclass
 export default class BhvSpring extends cc.Component {
@@ -42,10 +42,17 @@ export default class BhvSpring extends cc.Component {
     onLoad(){
         this._position =  100;
     }
+    
+    damp(speed:number = 1){
+        this._velocity = speed;
+    }
 
+    onEventDamp(e,data:string = '0'){
+        this._velocity = parseFloat(data);
+    }
+
+    //自动刷新弹簧状态
     update() {
-        // Update the spring position
-
         if(!this.move){
             this._force = -this.springConstant * (this._position - this.restPos); // f=-ky
             this._acceleration = this._force / this.mass;          // Set the acceleration, f=ma == a=f/m

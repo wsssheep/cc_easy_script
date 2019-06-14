@@ -4,7 +4,7 @@ import BhvCameraExtra from "../general/BhvCameraExtra";
  * @Author: ws.s 
  * @Date: 2018-12-04 20:58:46 
  * @Last Modified by: wss
- * @Last Modified time: 2019-03-06 21:37:10
+ * @Last Modified time: 2019-06-13 20:35:36
  */
  //* ver 1.0.1 修复car 行为无法漂移的问题
  //* ver 1.0.2 增加car角度锁定设置,可以在漂移完成后，矫正回车的运动角度
@@ -134,7 +134,7 @@ export default class BhvCar extends cc.Component {
 
     /**角度约束强度 */
     @property({
-        tooltip: '约束强度设定,0~1',
+        tooltip: '转向角度约束强度设定,0~1',
         max:1,
         min:0,
         step:0.01,

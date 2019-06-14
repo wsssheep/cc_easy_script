@@ -12,6 +12,7 @@ const {ccclass, property, menu} = cc._decorator;
  * [开发中]链式行为 ver 0.0.1
  * 可以将几个子节点绑定成关节模式
  * 链式结构，可以将容器内的对象链接起来
+ * TODO 可以将自己定义的节点构成 chain
  * 后续开发请参考url: http://p5js.org/zh-Hans/examples/interaction-follow-1.html
  * 后续开发请参考url: http://p5js.org/zh-Hans/examples/interaction-follow-2.html
  * 后续开发请参考url: http://p5js.org/zh-Hans/examples/interaction-follow-3.html

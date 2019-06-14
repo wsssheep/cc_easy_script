@@ -2,8 +2,11 @@
 const {ccclass, property,menu,disallowMultiple,executeInEditMode} = cc._decorator;
 
 enum PIN_TYPE {
+    /**锁定坐标和角度 */
     positionAngle,
+    /**只锁定坐标 */
     position,
+    /**只锁定角度 */
     angle,
     // rope,
     // bar,
@@ -11,9 +14,10 @@ enum PIN_TYPE {
 
 /**
  * 无视节点层级，绑定该节点 和 另外一个节点的位置关系，
- * todo.. 增加绑定边界框的功能
- * todo.. 增加绑定 非 中心锚点的情况
+ * todo.. 增加绑定 缩放比例的选项
+ * todo.. 增加绑定到边界框的功能
  * todo.. 增加绑定缩放的情况
+ * todo.. 增加自动销毁，当pinObject 销毁时，BhvPIn 的该对象也会被销毁，适合血条、Buff 等对象
  * 
  */
 @ccclass
@@ -67,7 +71,7 @@ export default class BhvPin extends cc.Component {
 		this.myStartRotation = 0;  
 		this.theirStartRotation = 0;
         this.lastKnownAngle = 0;
-        if(this.pinObject)this.pin(this.pinObject);
+        if(this.pinObject)this.pin(this.pinObject,this.mode);
 
     }
 
@@ -120,7 +124,7 @@ export default class BhvPin extends cc.Component {
 		}
         
         
-		if ((this.mode === 0 || this.mode === 2) && (this.node.rotation !== newAngle))
+		if ((this.mode === PIN_TYPE.positionAngle || this.mode === PIN_TYPE.angle) && (this.node.rotation !== newAngle))
 		{
 			this.node.rotation = newAngle;
         }
@@ -128,7 +132,7 @@ export default class BhvPin extends cc.Component {
        
     }
 
-    pin(node:cc.Node,mode?){
+    pin(node:cc.Node,mode:PIN_TYPE = 0){
         this.pinObject = node;
 		this.pinAngle =  - this.angleTo(node.x, node.y,this.node.x, this.node.y) - node.rotation;
 		//this.pinAngle =  - this.angleTo(node.x, node.y,this.node.x, this.node.y) - node.rotation;
@@ -136,7 +140,7 @@ export default class BhvPin extends cc.Component {
 		this.myStartRotation = this.node.rotation;
 		this.lastKnownAngle = this.node.rotation;
 		this.theirStartRotation = node.rotation;
-        this.mode = mode||0;
+        this.mode = mode;
     }
 
     unpin(){
