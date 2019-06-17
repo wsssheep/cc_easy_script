@@ -31,7 +31,7 @@ export default class ChessBank {
     count:number =0;
 
 
-    add(chessNode:cc.Node, uid?:number):number {
+    add(chessNode:cc.Node, uid?:number|string):number|string {
         let refs = this.refs;
         let uidKey = this.uidKey;
 
@@ -67,6 +67,7 @@ export default class ChessBank {
         }
 
         return uid;
+
     }
 
     addMultiple(objects:cc.Node[]):number[] {

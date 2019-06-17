@@ -20,7 +20,7 @@ const IsEmpty = function (source) {
 
 
 /**
- * 棋牌数据
+ * 保存棋盘数据的接口
  */
 export default class BoardData {
     constructor() {
@@ -38,14 +38,9 @@ export default class BoardData {
 
     chessCount:number = 0;
 
-
-    shutdown() {
+    destroy() {
         this.XYZToUID = undefined;
         this.UIDToXYZ = undefined;
-    }
-
-    destroy() {
-        this.shutdown();
     }
 
     reset() {

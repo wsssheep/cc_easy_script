@@ -1,6 +1,8 @@
+import { IBoardShapeBase } from './../utils/interface';
+import { ORIENTATION_TYPE } from "../utils/convert";
 
 
-export default class Quad {
+export default class Quad implements IBoardShapeBase {
     constructor(config) {
         this.setType(config.type||0);
         this.setOriginPosition(config.x,config.y||0);
@@ -124,12 +126,3 @@ export default class Quad {
 }
 
 
-
-export enum ORIENTATION_TYPE {
-    /**正交类型 */
-    ORTHOGONAL,
-    /**斜角类型 */
-    ISOMETRIC,
-    /**交错类型 */
-    STAGGERED
-};
