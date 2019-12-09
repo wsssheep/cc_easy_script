@@ -1,13 +1,22 @@
+/*
+ * @Author: wss 
+ * @Date: 2019-06-22 16:14:37 
+ * @Last Modified by: wss
+ * @Last Modified time: 2019-06-22 16:14:57
+ */
 
-const {ccclass, property, menu} = cc._decorator;
+
+const {ccclass, property, menu,executeInEditMode} = cc._decorator;
 
 /**
  * 自动尺寸填充 ver1.0,
  * 可以无视节点顺序,默认以父对象为尺寸参照填充
+ * 一般用于气泡对话框的制作
  */
 @ccclass
+@executeInEditMode
 @menu("添加特殊行为/UI/Auto Size Fill (内容适配)")
-export default class NewClass extends cc.Component {
+export default class BhvAutoSizeFill extends cc.Component {
 
 
     @property({
@@ -42,8 +51,6 @@ export default class NewClass extends cc.Component {
         if(!this.target)return;
         let offsetX = this.offset.x;
         let offsetY = this.offset.y;
-        console.log(this.target);
-        console.log(cc.winSize);
         //this.node.setContentSize(cc.size(,));
         this.node.width = this.target.width+offsetX;
         this.node.height = this.target.height+offsetY;

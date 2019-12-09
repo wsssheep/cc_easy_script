@@ -4,7 +4,7 @@ import BhvDragDrop from "./BhvDragDrop";
  * @Author: wss 
  * @Date: 2019-05-08 12:21:15 
  * @Last Modified by: wss
- * @Last Modified time: 2019-05-09 16:27:01
+ * @Last Modified time: 2019-06-22 16:17:05
  */
 
 
@@ -22,7 +22,7 @@ enum DRAG_EFFECT {
  *  可以捕获到 拖拽过来的节点的信息，反馈拖拽情况
  */
 @ccclass
-@menu("添加特殊行为/General/Drop Area(放置区域)")
+@menu("添加特殊行为/Input/Drop Area(放置区域)")
 @disallowMultiple
 export default class BhvDropArea extends cc.Component {
 

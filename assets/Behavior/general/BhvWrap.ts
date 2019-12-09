@@ -19,7 +19,7 @@ enum WRAP_MODE {
 
 /**
  * Wrap 包装，会将对象限定在包装范围内,可以循环也可以限制移动的边界范围
- * （请使用 BhvBoundary 代替，该行为已经弃用）
+ * （请使用新的 BhvBoundary 行为代替，该行为已经弃用）
  */
 @ccclass
 @menu("添加特殊行为/General/Wrap (包装)")
@@ -31,6 +31,9 @@ export default class BhvWrap extends cc.Component {
         tooltip: "wrap 模式",   
     })
     wrapMode = WRAP_MODE.parent;
+
+    @property(cc.Node)
+    customNode:cc.Node = null
 
     // LIFE-CYCLE CALLBACKS:
 
@@ -44,12 +47,11 @@ export default class BhvWrap extends cc.Component {
         child.setParent(this.node);
         child.setPosition(0,0);
 
-
-        // 测试，绘制 bound box
-        // var graphic:cc.Graphics = child.addComponent(cc.Graphics);
-        // graphic.rect(-bBound.width * offset.x,-bBound.height *offset.y,bBound.width,bBound.height);
-        // graphic.fillColor = cc.color(0,255,155,155);
-        // graphic.fill();
+        /**@type cc.Graphics */
+        var graphic = child.addComponent(cc.Graphics);
+        graphic.rect(-bBound.width * offset.x,-bBound.height *offset.y,bBound.width,bBound.height);
+        graphic.fillColor = cc.color(0,255,155,155);
+        graphic.fill();
     
     }
 
@@ -73,7 +75,7 @@ export default class BhvWrap extends cc.Component {
         var canvas:cc.Node = cc.find('Canvas');
         var canvasSize:cc.Size = canvas.getContentSize();
         var parent:cc.Node = this.node.getParent(); //获取该节点的父节点	
-        var bbox2 = this.getBBOX(parent);
+        var bbox2 ;
 
         var lBound:number = 0, rBound:number = 0, tBound:number = 0, bBound:number = 0;
       	
@@ -88,6 +90,17 @@ export default class BhvWrap extends cc.Component {
 		// wrap to viewport
 		else if(this.wrapMode === WRAP_MODE.parent &&parent)
 		{
+            bbox2 = this.getBBOX(parent);
+			lBound = bbox2.left;
+			rBound = bbox2.right;
+			tBound = bbox2.top;
+            bBound = bbox2.bottom;
+         
+        }
+
+        else if(this.wrapMode === WRAP_MODE.custom &&this.customNode)
+		{
+            bbox2 = this.getBBOX(this.customNode);
 			lBound = bbox2.left;
 			rBound = bbox2.right;
 			tBound = bbox2.top;

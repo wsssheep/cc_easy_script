@@ -1,15 +1,17 @@
 /*
  * @Author: wss 
- * @Date: 2019-05-03 16:40:12 
- * @Last Modified by: wss
- * @Last Modified time: 2019-05-03 18:28:37
+ * @Date: 2019-06-03 17:16:46 
+ * @Last Modified by:   wss 
+ * @Last Modified time: 2019-06-03 17:16:46 
  */
+
 
 const { ccclass, property, menu } = cc._decorator;
 
 
 /**
  * 随机圆上一点作为振幅，不断缩小半径降低强度，半径缩小的速率就是阻尼，可以实现各种效果的震动。
+ * ( 修复震动 BUG )
  */
 @ccclass
 @menu("添加特殊行为/Movement/Shake (震动)")
@@ -63,10 +65,20 @@ export default class BhvShake extends cc.Component {
         this.shake(parseFloat(time));
     }
 
+    /**重新设置震动的初始位置 */
+    setOriginPos(pos:cc.Vec2){
+        this._originPos = pos;
+    }
+
     shake(time: number = 0.5, intensity?: cc.Vec2) {
         //如果在shake状态，那么只是会维持shaking，而不改变默认的位置
-        if (!this._isShaking) {
-            this._originPos = this.node.position;
+        if (this._isShaking === false) {
+            // this._originPos = this.node.position;
+            if(!this.movingMode){
+                this.node.position.x = this._originPos.x;
+                this.node.position.y = this._originPos.y;
+            }
+
         }
 
         if (time > 0) {
@@ -87,9 +99,11 @@ export default class BhvShake extends cc.Component {
         this._timer -= dt;
         //倒计时
         if (this._timer <= 0) {
+            if(!this.movingMode){
+                this.node.x = this._originPos.x;
+                this.node.y = this._originPos.y;
+            }
             this._isShaking = false;
-            this.node.x = this._originPos.x;
-            this.node.y = this._originPos.y;
         }
 
         let sx, sy;
@@ -110,9 +124,15 @@ export default class BhvShake extends cc.Component {
             }
 
             if(this._intensity.y<0.01 && this._intensity.x<0.01){
+                this._intensity.y = 0;
+                this._intensity.x = 0;
+                if(!this.movingMode){
+                    this.node.x = this._originPos.x;
+                    this.node.y = this._originPos.y;
+                }
+
                 this._isShaking = false;
-                this.node.x = this._originPos.x;
-                this.node.y = this._originPos.y;
+                return;
             }
         }
 

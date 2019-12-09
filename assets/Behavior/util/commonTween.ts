@@ -2,15 +2,16 @@
  * @Author: wss 
  * @Date: 2019-04-26 20:27:00 
  * @Last Modified by: wss
- * @Last Modified time: 2019-04-27 00:38:20
+ * @Last Modified time: 2019-05-09 17:45:50
  */
 
 
-//TWEEN动画类 复用
+//TWEEN动画类 复用模块，封装了一些基本 的 action 用来实现tween效果
 
 
 /** 基本需要用到的 EASE 类型 */
 export enum EASE_TYPE {
+    Liner,
     SineIn,
     SineInOut,
     SineOut,
@@ -46,13 +47,29 @@ export enum ANI_ACTION_TYPE {
 }
 
 
+export enum NODE_TWEEN_PROPERTY {
+    POSITION,
+    SCALE,
+    SCALE_X,
+    SCALE_Y,
+    WIDTH,
+    HEIGHT,
+    ROTATION,
+    SKEW_X,
+    SKEW_Y,
+}
+
+
 class AnimationCommonConfig {
 
      ACTION_TYPE = ANI_ACTION_TYPE;
      EASE_TYPE = EASE_TYPE
+     NODE_TWEEN_PROPERTY = NODE_TWEEN_PROPERTY;
+      
      getTweenType(type: EASE_TYPE) {
         let ease;
         switch (type) {
+            case EASE_TYPE.Liner: ease = null; break;
             case EASE_TYPE.SineIn: ease = cc.easeSineIn(); break;
             case EASE_TYPE.SineInOut: ease = cc.easeSineInOut(); break;
             case EASE_TYPE.SineOut: ease = cc.easeSineOut(); break;
@@ -154,26 +171,27 @@ class AnimationCommonConfig {
                 break;
             case 1://SLIDE 滑动切入左右 LEFT TO RIGHT/RIGHT TO LEFT
                 if (isActionOut) {
-                    action = cc.moveTo(time , cc.v2(reverseOrder ? width : -width, 0)).easing(easing);
+                    action = cc.moveTo(time , cc.v2(reverseOrder ? width : -width, 0));
                 } else {
                     if(node)node.x = originPos.x+ width * (reverseOrder ? 1 : -1) *  (slideSameDir ? 1 : -1);
-                    action = cc.moveTo(time ,originPos).easing(easing);
+                    action = cc.moveTo(time ,originPos);
                 }
+                
                 break;
             case 2://SLIDE 滑动切入上下 UP TO DOWN / DOWN TO UP
                 if (isActionOut) {
-                    action = cc.moveTo(time , cc.v2(0, reverseOrder ? height : -height)).easing(easing);
+                    action = cc.moveTo(time , cc.v2(0, reverseOrder ? height : -height));
                 } else {
                     if(node)node.y = originPos.y + height * (reverseOrder ? 1 : -1) * (slideSameDir ? 1 : -1);
-                    action = cc.moveTo(time , originPos).easing(easing);
+                    action = cc.moveTo(time , originPos);
                 }
                 break;
             case 3://SLIDE 滑动切入 前后 Front TO BACK / BACK TO FRONT
                 if (isActionOut) {
-                    action = cc.moveTo(time , cc.v2(reverseOrder ? -width : width, 0)).easing(easing);
+                    action = cc.moveTo(time , cc.v2(reverseOrder ? -width : width, 0));
                 } else {
                     if(node)node.x = originPos.x - width * (reverseOrder ? 1 : -1) * (slideSameDir ? 1 : -1);
-                    action = cc.moveTo(time , originPos).easing(easing);
+                    action = cc.moveTo(time , originPos);
                 }
                 break;
             case 4://SCALE 正常缩放 SCALE
@@ -182,14 +200,14 @@ class AnimationCommonConfig {
                     node.opacity = 0;
                 }
                 action = cc.sequence([
-                    cc.scaleTo(time , isActionOut ? 0.01 : 1).easing(easing),
+                    cc.scaleTo(time , isActionOut ? 0.01 : 1),
                     cc.fadeTo(time  * 0.1, isActionOut ? 0 : 255)
                 ])
                 break;
             case 5://SCALE 扩散缩放 SCALE_OUT
                 if (isActionOut) {
                     action = cc.spawn([
-                        cc.scaleTo(time , reverseOrder ? 0.01 : 5).easing(easing),
+                        cc.scaleTo(time , reverseOrder ? 0.01 : 5),
                         cc.fadeTo(time , 0)
                     ]);
                 } else {
@@ -198,7 +216,7 @@ class AnimationCommonConfig {
                         node.opacity = 0;
                     }
                     action = cc.spawn([
-                        cc.scaleTo(time , 1).easing(easing),
+                        cc.scaleTo(time , 1),
                         cc.fadeTo(time , 255)
                     ]);
                 }
@@ -206,39 +224,42 @@ class AnimationCommonConfig {
                 break;
             case 6://FLIP 缩放翻转 左右
                 if (isActionOut) {
-                    action =  cc.scaleTo(time , 0.01, 1).easing(easing);
+                    action =  cc.scaleTo(time , 0.01, 1);
                 } else {
                     if(node){
                         node.scaleX = 0.01;
                         node.opacity = 0;
                     }
                     action =  cc.spawn([
-                        cc.fadeTo(time , 255).easing(easing),
-                        cc.scaleTo(time , 1, 1).easing(easing)
+                        cc.fadeTo(time , 255),
+                        cc.scaleTo(time , 1, 1)
                     ])
                 }
     
                 break;
             case 7://FLIP 缩放翻转 上下
                 if (isActionOut) {
-                    action = cc.scaleTo(time , 1, 0.01).easing(easing)
+                    action = cc.scaleTo(time , 1, 0.01)
                 } else {
                     if(node){
                         node.scaleY = 0.01;
                         node.opacity = 0;
                     }
                     action =  cc.spawn([
-                        cc.fadeTo(time , 255).easing(easing),
-                        cc.scaleTo(time , 1, 1).easing(easing)
+                        cc.fadeTo(time , 255),
+                        cc.scaleTo(time , 1, 1)
                     ])
                 }
     
-    
+
+
                 break;
             default:
                 break;
         }
 
+        //如果 有 easing, 并且有 action ，就加上tween 效果
+        if(easing && action)action.easing(easing);
 
         if(delay>0){
             return cc.sequence([cc.delayTime(delay),action]);
@@ -248,6 +269,8 @@ class AnimationCommonConfig {
     
     
     }
+
+
 }
 
 export let TweenConfig = new AnimationCommonConfig();

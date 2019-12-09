@@ -1,8 +1,8 @@
 /*
  * @Author: wss 
- * @Date: 2019-04-16 21:32:36 
+ * @Date: 2019-07-29 15:21:54 
  * @Last Modified by: wss
- * @Last Modified time: 2019-04-17 14:19:51
+ * @Last Modified time: 2019-07-29 15:24:41
  */
 
 
@@ -15,6 +15,7 @@ const {ccclass, property,menu,disallowMultiple} = cc._decorator;
 /**
  * 8 Direction行为控制节点在上、下、左、右和对角线上移动，
  * 默认情况下由键盘方向键控制。
+ * ver 1.0 增加跟随，跟随角度设置为正常角度
  */
 @ccclass
 @menu("添加特殊行为/Movement/MoveTo (移动到某处)")
@@ -43,11 +44,15 @@ export default class BhvMoveTo extends cc.Component {
     @property({tooltip:'是否在moveto 时用角度朝向移动方向'})
     public rotateToTarget:boolean = true;
 
+    @property({tooltip:'抵达目标后，是否停下来'})
+    public arriveStop:boolean = true;
+
     //目标范围容差，越小靠近越精确
     @property({tooltip:'极限距离，当小于该距离时,判断移动结束（注意不能设为0值）'})
     public closeLimitRange:number = 0.001;
 
-    /**反转移动方向，原本是moveto，反转后 将会反向运动 */
+
+    /**反转移动方向，原本是moveto，反转后 将会反向运动 (未实装) */
     public reverseMoving:boolean  = false;
 
     // LIFE-CYCLE CALLBACKS:
@@ -117,10 +122,12 @@ export default class BhvMoveTo extends cc.Component {
         if(this.speed<0)this.speed = 0;
 
         //抵达目标
-        
-        if (Math.abs(curX-targetX) < limitMin && Math.abs(curY -targetY) < limitMin) {
-            this._isRunning = false;
-            this.onComplete();
+        if(this.arriveStop){
+            if (Math.abs(curX-targetX) < limitMin && Math.abs(curY -targetY) < limitMin) {
+                this._isRunning = false;
+                this.onComplete();
+            }
+    
         }
 
         if ((this.speed === 0) || (dt === 0)) {
@@ -144,7 +151,7 @@ export default class BhvMoveTo extends cc.Component {
         this.node.y = newY;
 
         if (this.rotateToTarget) {
-            this.node.rotation = cc.misc.radiansToDegrees(Math.atan2(curY-newY, curX-newX));
+            this.node.rotation = cc.misc.radiansToDegrees(Math.atan2(curY-newY, -(curX-newX)));
         }
 
  

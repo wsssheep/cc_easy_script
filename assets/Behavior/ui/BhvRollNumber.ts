@@ -2,7 +2,7 @@
  * @Author: wss 
  * @Date: 2019-04-17 16:33:34 
  * @Last Modified by: wss
- * @Last Modified time: 2019-04-21 17:39:53
+ * @Last Modified time: 2019-05-17 21:25:20
  */
 
 const {ccclass, property, menu} = cc._decorator;
@@ -18,9 +18,14 @@ enum VALUE_TYPE {
     PERCENTAGE,
     /*缩写单位模式KMBT */
     KMBT_FIXED2,
+    /**以千单位的分隔符 */
+    THOUSAND_SEPARATOR,
     /**自定义模式 (通过传入的函数,进行自定义) */
     CUSTOMER
 }
+
+/**模板字符串使用的替换字符 */
+const REPLACE_STRING = '{{0}}';
 
 /**
  * [滚动数字] ver 0.5.0
@@ -47,9 +52,18 @@ export default class BhvRollNumber extends cc.Component {
     showPlusSymbol:boolean = false;
 
     @property({
-        tooltip:'滚动目标值'
+        tooltip:'滚动的目标值'
     })
-    targetValue:number = 100;  
+    public get targetValue() : number {
+        return this._targetValue;
+    }
+    public set targetValue(v : number) {
+        this._targetValue = v;
+        this.scroll();//数据变动了就开始滚动
+    }
+    @property
+    private _targetValue : number = 100;
+    
     
     /** 滚动的线性差值 0 ~ 1 */
     @property({
@@ -74,18 +88,31 @@ export default class BhvRollNumber extends cc.Component {
     private runWaitTimer:number = 0;
 
     @property({
+        tooltip:"x {{0}}"
+    })
+    private formatTemplate:string = REPLACE_STRING;
+
+    @property({
         type:cc.Enum(VALUE_TYPE),
         tooltip:'是否在开始时就播放'
     })
     private valueType:VALUE_TYPE = VALUE_TYPE.INTEGER;
 
-    /**自定义string 处理函数 */
-    private _custom_callback:(curValue:number,targetValue:number) => string = null;
-    
+
+    /**
+     * scrollEvents
+     * 参数1, label
+     * 参数2, current Value
+     * 参数3, target Value
+     */
+    @property({
+        type:cc.Component.EventHandler,
+        visible:function(){return this.valueType == VALUE_TYPE.CUSTOMER}
+    })
+    private scrollEvent:cc.Component.EventHandler = new cc.Component.EventHandler();
 
     private isScrolling:boolean = false;   
 
-    private _lastLabelText:string  = '';
 
     //BhvRollNumber
 
@@ -102,8 +129,10 @@ export default class BhvRollNumber extends cc.Component {
         }
     }
 
+
     /**开始滚动数字 */
     scroll(){
+        if(this.isScrolling)return;//已经在滚动了就返回
         if(this.runWaitTimer>0){
             this.scheduleOnce(()=>{
                 this.isScrolling = true;
@@ -132,15 +161,17 @@ export default class BhvRollNumber extends cc.Component {
     scrollTo(target?:number){
         if(target === null || target === undefined)return;
         this.targetValue = target;
-        this.scroll();
     }
 
-    /** 更新文本 */
-    updateLabel(){
-        let value  = this.value;
-        let string = '';
+    /**
+     * 格式化类型
+     */
+    static VALUE_TYPE = VALUE_TYPE;
 
-        switch (this.valueType) {
+    /**格式化数值类型 */
+    static Format(value:number,type:VALUE_TYPE){
+        let string = '';
+        switch (type) {
             case VALUE_TYPE.INTEGER://最终显示整数类型
                 string = Math.round(value) + '';
                 break;
@@ -168,37 +199,50 @@ export default class BhvRollNumber extends cc.Component {
                     string = Math.round(value).toString();
                 }
                 break;
-            case VALUE_TYPE.CUSTOMER: //自定义设置模式 (通过给定的自定义函数..处理)
-                if(this._custom_callback){
-                    string = this._custom_callback(this.value,this.targetValue)
-                }
+            case VALUE_TYPE.THOUSAND_SEPARATOR:
+                let num = Math.round(value).toString();
+    
+                string = num.replace(new RegExp('(\\d)(?=(\\d{3})+$)', 'ig'), "$1,");
                 break;
             default:
                 break;
         }
 
         //显示正负符号
+        return string;
+    }
 
+    /** 更新文本 */
+    updateLabel(){
+        let value  = this.value;
+        let string = BhvRollNumber.Format(value,this.valueType);
+
+        //替换字符 {{0}}
+        if(this.formatTemplate.includes(REPLACE_STRING)){
+            string = this.formatTemplate.replace(REPLACE_STRING,string);
+        }
+
+        //显示正负符号
         if(this.showPlusSymbol){
-            if(value>0){
+            if(value>=0){
                 string ='+'+string;
             }else if(value<0){
                 string ='-'+string;
             }
-
         }
-
-
        
-        if(this.label){
+        if(this.label && this.valueType !== VALUE_TYPE.CUSTOMER){
             if(string === this.label.string)return; //保证效率,如果上次赋值过,就不重复赋值
             this.label.string = string;
+        }else{
+            this.scrollEvent.emit([this.label,this.value,this.targetValue,this.scrollEvent.customEventData]);
         }
     }
 
     update (dt) {
         if(this.isScrolling == false)return;
-        this.value = cc.misc.lerp(this.value,this.targetValue,this.lerp);
+        let scale = (dt / (1 / 60));
+        this.value = cc.misc.lerp(this.value,this.targetValue,this.lerp*scale);
         this.updateLabel();
         if(Math.abs(this.value - this.targetValue)<=0.0001){
             this.value = this.targetValue;

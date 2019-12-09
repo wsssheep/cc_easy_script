@@ -1,22 +1,23 @@
-// Learn TypeScript:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/typescript.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
+/*
+ * @Author: wss 
+ * @Date: 2019-06-22 15:41:32 
+ * @Last Modified by: wss
+ * @Last Modified time: 2019-06-22 16:17:08
+ */
 
-const {ccclass, property,disallowMultiple ,menu} = cc._decorator;
+const {ccclass, property,disallowMultiple ,menu,executionOrder} = cc._decorator;
 
 /**
  * 触摸区域获取
  */
 @ccclass
-@menu("添加特殊行为/General/Input Area (输入区域)")
+@menu("添加特殊行为/Input/Input Area (输入区域)")
 @disallowMultiple
+@executionOrder(-1)
 export default class BhvInputArea extends cc.Component {
+
+    @property
+    tag:string = '';
 
     /**是否正在触摸该区域 */
     public isTouching:boolean = false;
@@ -27,6 +28,26 @@ export default class BhvInputArea extends cc.Component {
     private startTouchId:number = 0;
 
     public duration:number = 0;
+
+    static _TempComps:{tag:string,comp:BhvInputArea}[] = [];
+
+    /**
+     * 查找触摸区域的问题
+     * @param tag 查询的标签
+     */
+    static find(tag:string):BhvInputArea{
+        let res = this._TempComps.find(v=>v.tag === tag);
+        if(res){
+            return res.comp;
+        }
+    }
+
+    onLoad(){
+        BhvInputArea._TempComps.push({
+            tag:this.tag,
+            comp:this
+        })
+    }
 
     onEnable(){
         let node = this.node;
@@ -46,10 +67,6 @@ export default class BhvInputArea extends cc.Component {
         node.off(cc.Node.EventType.TOUCH_CANCEL,this.onTouchCancel,this,true);
         node.off(cc.Node.EventType.MOUSE_ENTER,this.onMouseEnter,this,true);
         node.off(cc.Node.EventType.MOUSE_LEAVE,this.onMouseLeave,this,true);
-    }
-
-    start () {
-
     }
 
     onMouseEnter(e:cc.Event.EventMouse){
@@ -78,6 +95,11 @@ export default class BhvInputArea extends cc.Component {
     onTouchCancel(e:cc.Touch){
         if(e.getID()!== this.startTouchId)return;
         this.isTouching = false;
+    }
+
+    onDestroy(){
+        let index =  BhvInputArea._TempComps.findIndex(config=>{return config.comp === this});
+        BhvInputArea._TempComps.splice(index);
     }
 
     update (dt) {

@@ -44,7 +44,7 @@ export default class BhvDirection8 extends cc.Component {
  
     @property({
         type: cc.Enum(DIRECTION),
-        tooltip: '角度方向'
+        tooltip: '角度方向,0-up_down 只允许上下移动\n1-left_light 只允许左右移动\n2-direction4 只允许4个方向移动\n3-direction8 允许8个方向移动'
     })
     directions:DIRECTION = DIRECTION.direction8;
 

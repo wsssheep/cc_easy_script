@@ -2,11 +2,11 @@
  * @Author: ws.s 
  * @Date: 2018-12-06 16:11:31 
  * @Last Modified by: wss
- * @Last Modified time: 2019-04-19 01:15:31
+ * @Last Modified time: 2019-05-22 23:08:05
  */
 
 
-const { ccclass, property, menu, disallowMultiple,requireComponent} = cc._decorator;
+const { ccclass, property, menu, disallowMultiple,requireComponent,executionOrder} = cc._decorator;
 
 enum FOLLOW_TYPE {
     /** 跟随玩家，且不使用 dead zone. */
@@ -26,7 +26,6 @@ enum SHAKE_TYPE {
 }
 
 
-// todo 解决 deadzone 问题, 在 follow 时角色不会对齐 deadzone 中心
 // watch() 和 watchAt() 暂时切换摄像机的目标对象/ 或 X / Y 的位置上, 停留一段时间后返回。
 // 看情况移除 atLimit 或者 bounds 功能 (但是，或许可以保留....)
 // 如果想要来回在目标之间切换，请使用 follow(),改变目标
@@ -40,10 +39,16 @@ enum SHAKE_TYPE {
 @menu("添加特殊行为/Helper/Camera Extra (相机拓展)")
 @disallowMultiple
 @requireComponent(cc.Camera)
+@executionOrder(-1)
 export default class BhvCameraExtra extends cc.Component {
     /**debug,显示相机 debug 信息 */
     @property
     debug: boolean = true;
+
+    @property({
+        tooltip:'用于搜索的标签，可以被BhvCameraExtra 搜索到'
+    })
+    tag:string = '';
 
     /**摄像机目标节点 */
     @property(cc.Node)
@@ -197,10 +202,26 @@ export default class BhvCameraExtra extends cc.Component {
     /** debug 使用的 绘图环境 */
     private _fx_debug: cc.Graphics;
 
+    //静态类实现
+
+    static _cameras:{tag:string,comp:BhvCameraExtra}[] = [];
+    /**查询第一个拥有该 tag 的相机 */
+    static find(tag:string):BhvCameraExtra{
+       let camera =  BhvCameraExtra._cameras.find(v=>v.tag == tag);
+       if(camera){
+           return camera.comp;
+       }
+    }
+
     // LIFE-CYCLE CALLBACKS:
 
     onLoad() {
         
+        BhvCameraExtra._cameras.push({
+            tag:this.tag,
+            comp:this
+        });
+
         //加载相机，以及相机所需节点
         let canvas: cc.Node = cc.find('Canvas');
         this.view = cc.rect(canvas.x,canvas.y,canvas.width,canvas.height);
@@ -241,24 +262,30 @@ export default class BhvCameraExtra extends cc.Component {
 
         //let carNode = cc.find('Canvas/LayerGame').getChildByName('car');
 
-        //测试相机摇晃和闪烁功能
-        this.scheduleOnce(() => {
-            this.flash(cc.color(255, 0, 0), 0.5, true, 100);
-            this.shake(0.01,1,true,SHAKE_TYPE.SHAKE_BOTH);  
-            //this.run(cc.moveTo(2,100,100))
-            //this.run(cc.rotateTo(2,180));   
-            //this.run(cc.scaleTo(2,2));   
-            //this.focusOnXY(cc.v2(516,482));
-        }, 0.5);
+        // //测试相机摇晃和闪烁功能
+        // this.scheduleOnce(() => {
+        //     this.flash(cc.color(255, 0, 0), 0.5, true, 100);
+        //     this.shake(0.01,1,true,SHAKE_TYPE.SHAKE_BOTH);  
+        //     //this.run(cc.moveTo(2,100,100))
+        //     //this.run(cc.rotateTo(2,180));   
+        //     //this.run(cc.scaleTo(2,2));   
+        //     //this.focusOnXY(cc.v2(516,482));
+        // }, 0.5);
 
-        this.scheduleOnce(() => {
-            //this.run(cc.moveTo(2,0,0))
-            //this.run(cc.rotateTo(2,0));   
-            //this.run(cc.scaleTo(2,1));   
-            //this.focusOnXY(cc.v2(carNode.x,carNode.y));
-        }, 2.5);
+        // this.scheduleOnce(() => {
+        //     //this.run(cc.moveTo(2,0,0))
+        //     //this.run(cc.rotateTo(2,0));   
+        //     //this.run(cc.scaleTo(2,1));   
+        //     //this.focusOnXY(cc.v2(carNode.x,carNode.y));
+        // }, 2.5);
 
 
+    }
+
+    onDestroy(){
+        //销毁时，搜索相机组件是否保存进去了
+        let index =  BhvCameraExtra._cameras.findIndex(config=>{return config.comp === this});
+        if(index !==-1) BhvCameraExtra._cameras.splice(index);
     }
 
     /**绘制debug的 图形内容*/
@@ -375,7 +402,6 @@ export default class BhvCameraExtra extends cc.Component {
 
     }
 
-
     /** 更新画面颜色效果 */
     protected updateFX(dt) {
 
@@ -474,8 +500,6 @@ export default class BhvCameraExtra extends cc.Component {
 
     }
 
-
-
     /**
      * 
      * @param target - 相机锁定的节点目标
@@ -573,7 +597,7 @@ export default class BhvCameraExtra extends cc.Component {
 
     }
 
-    /** 画面闪烁颜色 */
+    /** 画面闪烁颜色，然后逐渐消退 （可以当做 fade out 使用 */
     flash(color = cc.color(255, 255, 255), duration = 0.5, force = false, opacity = 255): boolean {
 
         if (!this.fx || (!force && this._fxConfig.duration > 0)) {
@@ -594,8 +618,8 @@ export default class BhvCameraExtra extends cc.Component {
 
     }
 
-    /** 过渡到对应颜色 */
-    fade(color = cc.color(0, 0, 0, 255), duration = 0.5, force = false, opacity = 255, fadeIn = true): boolean {
+    /** 将画面过渡到对应颜色 (可以当做 fade in 使用) */
+    fade(color = cc.color(0, 0, 0, 255), duration = 0.5, force = false, opacity = 255): boolean {
 
         if (!this.fx || (!force && this._fxConfig.duration > 0)) return false;
         this._fxConfig.color = color;
@@ -606,7 +630,7 @@ export default class BhvCameraExtra extends cc.Component {
         this.fx.node.opacity = 0;
         this._fxConfig.opacity = opacity;
         this._fxConfig.duration = duration;
-        this._fxConfig.type = fadeIn ? 2 : 1;
+        this._fxConfig.type =  1;
         return true;
 
     }
@@ -617,8 +641,11 @@ export default class BhvCameraExtra extends cc.Component {
      * 目前能够生效的属性有: x,y,scale,rotation
      * @param action -需要执行的action
      */
-    run(action:cc.Action){
+    run(action:cc.Action,force:boolean = false){
         if(!action ||!this._ctrlNode )return;
+        if(force === true){
+            this._ctrlNode.stopAllActions();
+        }
         this._ctrlNode.runAction(action);
     }
 

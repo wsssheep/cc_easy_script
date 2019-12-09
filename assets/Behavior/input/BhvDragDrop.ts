@@ -4,7 +4,7 @@
  * @Author: wss 
  * @Date: 2019-05-03 22:55:38 
  * @Last Modified by: wss
- * @Last Modified time: 2019-05-09 16:25:10
+ * @Last Modified time: 2019-06-22 16:17:01
  */
 
 
@@ -29,7 +29,7 @@ enum DRAG_EFFECT {
  * 拖放操作判定
  */
 @ccclass
-@menu("添加特殊行为/General/Drag&Drop (拖放)")
+@menu("添加特殊行为/Input/Drag&Drop (拖放)")
 @disallowMultiple
 export default class BhvDragDrop extends cc.Component {
 

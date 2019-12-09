@@ -32,6 +32,9 @@ export default class BhvCircle extends cc.Component {
     @property({tooltip:'圆周半径'})
     radius:cc.Vec2 = cc.v2(50,50);
 
+    @property({tooltip:'是否以父节点而不是初始坐标为基准旋转, 初始坐标设为为(0，0)'})
+    rotateFromParent:boolean = false;
+
   
 
     originPos:cc.Vec2 =  cc.v2(0,0);
@@ -42,8 +45,10 @@ export default class BhvCircle extends cc.Component {
     start () {
         // set default
         let rad:number = cc.misc.degreesToRadians( this.angle);
-		this.originPos.x = this.node.x - Math.cos(rad) * this.radius.x;
-        this.originPos.y = this.node.y + Math.sin(rad) * this.radius.y;
+		this.originPos.x = this.node.x;// - Math.cos(rad) * this.radius.x;
+        this.originPos.y = this.node.y;// + Math.sin(rad) * this.radius.y;
+        this.node.x =  this.originPos.x - Math.cos(rad) * this.radius.x;
+        this.node.y =  this.originPos.x + Math.sin(rad) * this.radius.y;
         this.enabled = this.initialState;
     }
 
@@ -59,9 +64,15 @@ export default class BhvCircle extends cc.Component {
             //转换弧度值运算
             this.angle =  clamp_angle( this.angle + this.speed * dt);
             let rad:number = cc.misc.degreesToRadians(this.angle);
-            this.node.x = (Math.cos(rad) * (this.radius.x) ) + this.originPos.x,
-            this.node.y = -(Math.sin(rad) * (this.radius.y) ) + this.originPos.y;
-            
+            if(this.rotateFromParent){
+                this.node.x = (Math.cos(rad) * (this.radius.x) );
+                this.node.y = -(Math.sin(rad) * (this.radius.y) );
+            }else{
+                this.node.x = (Math.cos(rad) * (this.radius.x) ) + this.originPos.x;
+                this.node.y = -(Math.sin(rad) * (this.radius.y) ) + this.originPos.y;
+                
+            }
+
         }
 
     
