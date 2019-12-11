@@ -13,6 +13,7 @@ const EVENT_NAMES = {
 const {ccclass, property,menu,disallowMultiple} = cc._decorator;
 
 /**
+ * 移到某处 [v1.0.0]
  * 8 Direction行为控制节点在上、下、左、右和对角线上移动，
  * 默认情况下由键盘方向键控制。
  * ver 1.0 增加跟随，跟随角度设置为正常角度

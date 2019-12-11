@@ -8,7 +8,7 @@
 const {ccclass, property,disallowMultiple ,menu,executionOrder} = cc._decorator;
 
 /**
- * 触摸区域获取
+ * 触摸区域 [v0.0.1]
  */
 @ccclass
 @menu("添加特殊行为/Input/Input Area (输入区域)")

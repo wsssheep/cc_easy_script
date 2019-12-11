@@ -1,7 +1,12 @@
-import { EASE_TYPE, TweenConfig } from './../utils/commonTween';
+/*
+ * @Author: wss
+ * @Date: 2019-04-10 14:32:46
+ * @LastEditTime: 2019-12-11 10:56:37
+ * @LastEditors: wss
+ */
 
+import { EASE_TYPE, TweenConfig  } from './commonTween';
 const { ccclass, property, menu, disallowMultiple } = cc._decorator;
-
 const getTweenType = TweenConfig.getTweenType;
 
 enum ANIMATE_STATE {
@@ -19,7 +24,7 @@ enum ANIMATE_STATE {
 
 
 /**
- * 预制弹窗动画 ver 0.1.0 
+ * 预制弹窗动画 [v0.1.0]
  * 包含自动弹窗动画,可以针对某节点 进行快速的切入/切出的动画设置
  */
 @ccclass

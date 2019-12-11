@@ -11,7 +11,8 @@ const {ccclass, property,menu,disallowMultiple} = cc._decorator;
 
 
 /**
- * 旋转行为会使节点自动旋转
+ * 旋转到 [v1.0.0]
+ * 旋转行为会使节点自动旋转到某个特定位置
  */
 @ccclass
 @menu("添加特殊行为/Movement/RotateTo (旋转到指定角度)")

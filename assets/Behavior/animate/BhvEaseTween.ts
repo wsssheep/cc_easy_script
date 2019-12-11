@@ -1,5 +1,10 @@
-import { TweenConfig, EASE_TYPE, ANI_ACTION_TYPE, NODE_TWEEN_PROPERTY } from './../utils/commonTween';
-
+/*
+ * @Author: wss
+ * @Date: 2019-06-22 15:21:00
+ * @LastEditTime: 2019-12-11 10:56:53
+ * @LastEditors: wss
+ */
+import { EASE_TYPE, TweenConfig  } from './commonTween';
 
 const { ccclass, property, menu } = cc._decorator;
 
@@ -34,7 +39,9 @@ enum TWEEN_DIRECTION {
     CUSTOM
 }
 
-
+/**
+ * EaseTween [v0.0.1]
+ */
 @ccclass
 @menu('添加特殊行为/Animate/Ease Tween(缓动动画)')
 export default class BhvEaseTween extends cc.Component {

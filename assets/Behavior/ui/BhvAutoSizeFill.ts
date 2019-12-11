@@ -9,6 +9,7 @@
 const {ccclass, property, menu,executeInEditMode} = cc._decorator;
 
 /**
+ * !废弃, 使用cc.Weight 可以完美代替此插件
  * 自动尺寸填充 ver1.0,
  * 可以无视节点顺序,默认以父对象为尺寸参照填充
  * 一般用于气泡对话框的制作

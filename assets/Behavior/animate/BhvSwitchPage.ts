@@ -1,4 +1,4 @@
-import {  EASE_TYPE, TweenConfig, IGetAniActionConfig,ANI_ACTION_TYPE } from './../utils/commonTween';
+import {  EASE_TYPE, TweenConfig, IGetAniActionConfig,ANI_ACTION_TYPE } from './commonTween';
 
 const { ccclass, property, executeInEditMode,menu} = cc._decorator;
 

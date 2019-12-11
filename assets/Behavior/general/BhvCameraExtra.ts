@@ -32,7 +32,7 @@ enum SHAKE_TYPE {
 
 
 /**
- * [测试阶段]相机高级拓展 ver 0.1
+ * 相机高级拓展 [v0.1.0]
  * 可以拓展cc 相机的基本能力,实现 移动 跟随 deadzone flash shake scale 等常用功能
  */
 @ccclass

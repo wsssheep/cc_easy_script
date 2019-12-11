@@ -1,10 +1,8 @@
 /*
  * @Author: ws.s
  * @Date: 2019-11-25 13:02:46
- * @LastEditTime: 2019-12-04 15:38:55
- * @LastEditors: ws.s-dob5
- * @FilePath: \snake_ladder_vs\assets\Behavior\logic\BhvFSM.ts
- * @Description: 
+ * @LastEditTime: 2019-12-09 14:32:40
+ * @LastEditors: wss
  */
 
 
@@ -12,7 +10,7 @@ const { ccclass, property } = cc._decorator;
 
 
 /**
- * 状态机状态切换
+ * 状态机行为 [v1.0.0]
  */
 @ccclass
 export default class BhvFSM extends cc.Component {

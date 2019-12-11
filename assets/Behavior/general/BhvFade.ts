@@ -7,7 +7,9 @@
 
 const {ccclass, property,menu,disallowMultiple} = cc._decorator;
 
-
+/**
+ * 即将淘汰的插件
+ */
 @ccclass
 @menu("添加特殊行为/General/Fade (渐隐渐显)")
 @disallowMultiple

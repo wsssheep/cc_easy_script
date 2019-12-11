@@ -26,7 +26,7 @@ enum DRAG_EFFECT {
 }
 
 /**
- * 拖放操作判定
+ * 拖放操作 [v0.1.0]
  */
 @ccclass
 @menu("添加特殊行为/Input/Drag&Drop (拖放)")

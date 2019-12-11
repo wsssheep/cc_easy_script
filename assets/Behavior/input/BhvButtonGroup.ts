@@ -1,12 +1,9 @@
-// Learn TypeScript:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/typescript.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
+/*
+ * @Author: wss
+ * @Date: 2019-06-22 15:45:31
+ * @LastEditTime: 2019-12-09 14:53:27
+ * @LastEditors: wss
+ */
 
 const {ccclass, property, menu} = cc._decorator;
 
@@ -18,6 +15,7 @@ enum PARAM_TYPE {
 
 
 /**
+ * 群组按钮 [v1.0.0]
  * 群体事件，适合绑定节点组的回调信息
  * 将该组件的所处节点的 所有子节点，绑定相同的回调对象 
  */

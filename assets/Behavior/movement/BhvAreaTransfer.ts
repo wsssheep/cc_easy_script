@@ -9,8 +9,8 @@
 const { ccclass, property, menu, disallowMultiple } = cc._decorator;
 
 /**
- * [AreaTransfer]ver 0.1.0
- * 区域传送者,绑定了这个行为的 对象 会在一个区域内随机传送
+ * 区域传送者 [v0.1.0]
+ * 绑定了这个行为的 对象 会在一个区域内随机传送
  * 一般用途为随机在区域出现的闪光 等效果
  * （一般是父节点,你也可以指定节点)
  */

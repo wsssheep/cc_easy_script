@@ -1,12 +1,9 @@
-// Learn TypeScript:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/typescript.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
+/*
+ * @Author: wss
+ * @Date: 2019-04-10 14:32:46
+ * @LastEditTime: 2019-12-09 14:58:58
+ * @LastEditors: wss
+ */
 
 const {ccclass, property, menu, disallowMultiple} = cc._decorator;
 
@@ -24,6 +21,7 @@ enum ANGLE_MODE {
 
 
 /**
+ * 8方向运动行为 [v1.0.0]
  * 8 Direction行为控制节点在上、下、左、右和对角线上移动，
  * 默认情况下由键盘方向键控制。
  */

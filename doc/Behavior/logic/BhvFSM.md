@@ -23,7 +23,7 @@ Bhv FSM
 3. 在MyFSM类中声明不同的状态对应的触发函数: onXXXEnter / onXXXUpdate / onXXExit 
 4. 对应函数会在同名的状态切换的对应时机触发。比如onWalkEnter，是在 Walk 状态进入后触发的。
 5. 在不同的状态触发函数中，自己控制逻辑操作和对应条件的状态。
-6. 将 MyFSM 挂在对应的对象身上
+6. 将 MyFSM 组件 挂在对应的对象身上
 
 ### 脚本方法
 

@@ -33,6 +33,7 @@ enum SIMULATE_CONTROL {
 
 /**
  * [开发中] 平台跳跃/Platform ver 0.0.0
+ * !废弃行为，请使用物理代替
  */
 @ccclass
 export default class BhvPlatform extends cc.Component {

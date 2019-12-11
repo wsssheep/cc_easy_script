@@ -8,6 +8,7 @@
 const { ccclass, property, menu, disallowMultiple } = cc._decorator;
 
 /**
+ * 连线 [v.1.0.0]
  * 将该对象 放置到 两个节点之间，形成连线, 可以无视节点关系
  */
 @ccclass

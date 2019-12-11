@@ -1,7 +1,7 @@
 const { ccclass, property } = cc._decorator;
 
 /**
- * [准备开发]
+ * 图片残影 [v0.0.1]
  * 残影效果（未实现）
  */
 @ccclass

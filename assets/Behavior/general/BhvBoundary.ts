@@ -1,14 +1,3 @@
-import BhvCameraExtra from "./BhvCameraExtra";
-
-// Learn TypeScript:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/typescript.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
 const {ccclass, property,menu} = cc._decorator;
 
@@ -32,6 +21,7 @@ enum BOUNDARY_MODE {
 
 
 /**
+ * 边界范围 [v0.1.0]
  * 不支持不同层级的 boundary旋转，只能使用矩形 或者 圆形
  * bound 行为，将对象限制在一个盒子里 或者一个圆里
  * 可以做摇杆，或者限制角色/节点的移动范围

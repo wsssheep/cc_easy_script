@@ -1,12 +1,9 @@
-// Learn TypeScript:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/typescript.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
+/*
+ * @Author: wss
+ * @Date: 2019-04-10 14:32:46
+ * @LastEditTime: 2019-12-09 15:00:12
+ * @LastEditors: wss
+ */
 
 const {ccclass, property,menu,disallowMultiple} = cc._decorator;
 
@@ -16,6 +13,7 @@ const DIRECTION = cc.Enum({
 });
 
 /**
+ * 旋转 [v1.0.0]
  * 旋转行为会使节点自动旋转
  */
 @ccclass

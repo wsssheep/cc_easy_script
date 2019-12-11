@@ -9,7 +9,7 @@
 const { ccclass, property, executeInEditMode, requireComponent, menu } = cc._decorator;
 
 /**
- * [AtlasFrame]图集帧改变
+ * 图集帧 [v0.5.0]
  * ver 0.5.0 新功能追加，可以使用 图集模式,通过设置对象的名字模板来获取帧
  */
 @ccclass

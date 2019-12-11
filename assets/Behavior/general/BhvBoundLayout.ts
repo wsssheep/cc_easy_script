@@ -9,6 +9,7 @@
 const {ccclass, property,menu} = cc._decorator;
 
 /**
+ * 边界布局 [v0.1.0]
  * 限制该节点的所有子节点在图层的内的边界尺寸内移动
  * 你可以决定是否 wrap 或者 bound 或者 接触边界自动销毁对象
  * 该组件不应该有静止不动的节点，如果只是针对少量节点的复杂情况请使用 BhvBoundary 行为

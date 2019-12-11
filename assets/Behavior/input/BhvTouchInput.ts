@@ -51,10 +51,9 @@ enum SCREEN_DIV_TYPE {
 }
 
 /**
- * Cocos Touch 输入事件
+ * Cocos Touch 输入事件 [v0.1.0]
  * 封装节点touch 事件，让 触摸能够在全局环境中使用
  * 兼容鼠标输入操作方式
- * 
  */
 @ccclass
 @menu("添加特殊行为/Input/BhvTouchInput (全局鼠标)")

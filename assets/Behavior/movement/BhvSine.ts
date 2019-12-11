@@ -1,12 +1,9 @@
-// Learn TypeScript:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/typescript.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
+/*
+ * @Author: wss
+ * @Date: 2019-04-10 14:32:46
+ * @LastEditTime: 2019-12-09 15:02:05
+ * @LastEditors: wss
+ */
 
 const {ccclass, property, menu} = cc._decorator;
 
@@ -38,7 +35,11 @@ let _2pi:number  = 2 * Math.PI;
 let _pi_2:number  = Math.PI / 2;
 let _3pi_2:number = (3 * Math.PI) / 2;
 
-
+/**
+ * 函数运动 [v1.0.0]
+ * 以sine 函数曲线 进行周期性运动的插件，可以用在任意循环的效果变动
+ * 比如漂浮，摇摆，振荡
+ */
 @ccclass
 @menu("添加特殊行为/Movement/Sine (函数运动)")
 export default class BhvSine extends cc.Component {

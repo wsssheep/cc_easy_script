@@ -1,17 +1,15 @@
-// Learn TypeScript:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/typescript.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
+/*
+ * @Author: wss
+ * @Date: 2019-06-22 15:27:55
+ * @LastEditTime: 2019-12-09 15:08:01
+ * @LastEditors: wss
+ */
 
 const {ccclass, property,executeInEditMode,menu} = cc._decorator;
 
 /**
- *  通过改变序号来改变节点的颜色状态
+ *  颜色序号 [v1.0.0] 
+ * 通过改变序号来改变节点的颜色状态
  *  todo 增加切换颜色时的动画过渡效果
  */
 @ccclass

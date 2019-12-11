@@ -1,11 +1,9 @@
-import { ANI_ACTION_TYPE, EASE_TYPE, IGetAniActionConfig, TweenConfig } from './../utils/commonTween';
-
-
+import {ANI_ACTION_TYPE, EASE_TYPE, IGetAniActionConfig, TweenConfig } from './commonTween';
 const {ccclass, property,menu} = cc._decorator;
 
 /**
- * 群体动画，适用于需要控制一群节点批量进行动画移动的情况
- * todo 优化细节
+ * 群体动画 [v1.0.0]
+ * 适用于需要控制一群节点批量进行动画移动的情况
  */
 @ccclass
 @menu("添加特殊行为/Animate/Group Tween (组tween)")

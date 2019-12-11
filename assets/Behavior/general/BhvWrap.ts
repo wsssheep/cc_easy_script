@@ -18,8 +18,8 @@ enum WRAP_MODE {
 
 
 /**
+ *!（请使用新的 BhvBoundary 行为代替，该行为已经弃用）
  * Wrap 包装，会将对象限定在包装范围内,可以循环也可以限制移动的边界范围
- * （请使用新的 BhvBoundary 行为代替，该行为已经弃用）
  */
 @ccclass
 @menu("添加特殊行为/General/Wrap (包装)")
